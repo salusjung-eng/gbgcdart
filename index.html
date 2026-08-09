@@ -654,7 +654,14 @@
   .sidebar-backdrop{display:none;}
   .sidebar-close-mobile{display:none;}
   @media (max-width: 900px){
-    .app{padding:10px;}
+    html, body{overflow:auto; height:auto; min-height:100dvh;}
+    .app{
+      height:auto;
+      min-height:100dvh;
+      padding:10px;
+    }
+    .main{min-height:100dvh;}
+    .chat-window{min-height:60vh;}
     .sidebar{
       position:fixed;
       left:10px; top:10px; bottom:10px;
@@ -1373,22 +1380,6 @@ sidebarToggle.addEventListener('click', ()=>{
 });
 sidebarBackdrop.addEventListener('click', closeSidebarMobile);
 sidebarCloseMobile.addEventListener('click', closeSidebarMobile);
-
-/* =========================================================
-   모바일 키보드 대응: interactive-widget을 못 알아듣는 브라우저를 위해
-   visualViewport 크기에 맞춰 .app 높이를 직접 보정합니다.
-========================================================= */
-const appEl = document.querySelector('.app');
-function syncAppHeightToViewport(){
-  if(window.visualViewport){
-    appEl.style.height = window.visualViewport.height + 'px';
-  }
-}
-if(window.visualViewport){
-  window.visualViewport.addEventListener('resize', syncAppHeightToViewport);
-  window.visualViewport.addEventListener('scroll', syncAppHeightToViewport);
-  syncAppHeightToViewport();
-}
 clearBtn.addEventListener('click', ()=>{ messagesEl.innerHTML = ''; showWelcome(); });
 
 apiKeyInput.addEventListener('input', ()=>{
