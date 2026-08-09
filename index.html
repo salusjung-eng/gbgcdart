@@ -649,6 +649,8 @@
 
   /* ---------- Mobile ---------- */
   .sidebar-toggle{display:none;}
+  .sidebar-backdrop{display:none;}
+  .sidebar-close-mobile{display:none;}
   @media (max-width: 900px){
     .app{padding:10px;}
     .sidebar{
@@ -663,14 +665,48 @@
     .sidebar-toggle{display:flex;}
     .gauge-grid{grid-template-columns:repeat(2,1fr);}
     .brand-text p{display:none;}
+    .sidebar-backdrop{
+      display:block;
+      position:fixed; inset:0;
+      background:rgba(15,37,64,0.45);
+      z-index:240;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s ease;
+    }
+    .sidebar-backdrop.show{
+      opacity:1;
+      pointer-events:auto;
+    }
+    .sidebar-close-mobile{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:30px; height:30px;
+      border-radius:50%;
+      border:none;
+      background:var(--sky-100);
+      color:var(--navy-700);
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+      position:absolute;
+      top:12px; right:12px;
+      z-index:5;
+    }
   }
 </style>
 </head>
 <body>
 <div class="app">
 
+  <!-- 모바일 사이드바 배경 오버레이: 탭하면 사이드바가 닫혀요 -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
   <!-- ================= SIDEBAR ================= -->
   <aside class="sidebar" id="sidebar">
+    <button type="button" class="sidebar-close-mobile" id="sidebarCloseMobile" aria-label="메뉴 닫기">✕</button>
+
 
     <!-- 자동분석 입력 필드 -->
     <div id="autoFields">
@@ -1318,7 +1354,23 @@ async function sendMessage(){
 
 sendBtn.addEventListener('click', sendMessage);
 userInput.addEventListener('keydown', e=>{ if(e.key === 'Enter') sendMessage(); });
-sidebarToggle.addEventListener('click', ()=> sidebar.classList.toggle('open'));
+const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+const sidebarCloseMobile = document.getElementById('sidebarCloseMobile');
+
+function openSidebarMobile(){
+  sidebar.classList.add('open');
+  sidebarBackdrop.classList.add('show');
+}
+function closeSidebarMobile(){
+  sidebar.classList.remove('open');
+  sidebarBackdrop.classList.remove('show');
+}
+sidebarToggle.addEventListener('click', ()=>{
+  if(sidebar.classList.contains('open')) closeSidebarMobile();
+  else openSidebarMobile();
+});
+sidebarBackdrop.addEventListener('click', closeSidebarMobile);
+sidebarCloseMobile.addEventListener('click', closeSidebarMobile);
 clearBtn.addEventListener('click', ()=>{ messagesEl.innerHTML = ''; showWelcome(); });
 
 apiKeyInput.addEventListener('input', ()=>{
