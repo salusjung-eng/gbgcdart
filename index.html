@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <title>재무비율 분석 챗봇</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
@@ -1373,6 +1373,22 @@ sidebarToggle.addEventListener('click', ()=>{
 });
 sidebarBackdrop.addEventListener('click', closeSidebarMobile);
 sidebarCloseMobile.addEventListener('click', closeSidebarMobile);
+
+/* =========================================================
+   모바일 키보드 대응: interactive-widget을 못 알아듣는 브라우저를 위해
+   visualViewport 크기에 맞춰 .app 높이를 직접 보정합니다.
+========================================================= */
+const appEl = document.querySelector('.app');
+function syncAppHeightToViewport(){
+  if(window.visualViewport){
+    appEl.style.height = window.visualViewport.height + 'px';
+  }
+}
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize', syncAppHeightToViewport);
+  window.visualViewport.addEventListener('scroll', syncAppHeightToViewport);
+  syncAppHeightToViewport();
+}
 clearBtn.addEventListener('click', ()=>{ messagesEl.innerHTML = ''; showWelcome(); });
 
 apiKeyInput.addEventListener('input', ()=>{
